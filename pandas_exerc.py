@@ -28,8 +28,6 @@ min_close_last_52_days=qcom_dataframe['Low'].tail(52).min(axis=0)
 prom_close_last_52_days=qcom_dataframe['Close/Last'].tail(52).mean()
 prom_close_last_21_days=qcom_dataframe['Close/Last'].tail(21).mean()
 prom_close_days=qcom_dataframe['Close/Last'].mean()
-
-
-
-
-print(prom_close_last_52_days,prom_close_last_21_days,prom_close_days)
+prom_close_last_52_days=qcom_dataframe['Volume'].tail(52).mean()
+prom_close_last_21_days=qcom_dataframe['Volume'].tail(21).mean()
+prom_close_days=qcom_dataframe['Volume'].mean()
