@@ -16,11 +16,7 @@ qcom_dataframe= dirty_qcom_dataframe[relevant_columns]
 ###Ya puedo borrar la primera fila porque ya tengo los títulos
 qcom_dataframe=qcom_dataframe.drop(qcom_dataframe.index[0])
 
-#print(qcom_dataframe.describe())
-qcom_close_prices = qcom_dataframe[['Close/Last']]
-
-#print(qcom_close_prices)
-
+#busco los valores maximos y minimos
 max_value_stock= qcom_dataframe['High'].min(axis=0)
 min_value_stock=qcom_dataframe['Low'].min(axis=0)
 
