@@ -16,7 +16,20 @@ qcom_dataframe= dirty_qcom_dataframe[relevant_columns]
 ###Ya puedo borrar la primera fila porque ya tengo los títulos
 qcom_dataframe=qcom_dataframe.drop(qcom_dataframe.index[0])
 
-#busco los valores maximos y minimos
+###Busco los valores maximos y minimos
 max_value_stock= qcom_dataframe['High'].min(axis=0)
+max_close_last_52_days=qcom_dataframe['High'].tail(21).min(axis=0)
+max_close_last_52_days=qcom_dataframe['Close/Last'].tail(21).min(axis=0)
 min_value_stock=qcom_dataframe['Low'].min(axis=0)
+min_close_last_52_days=qcom_dataframe['Low'].tail(52).min(axis=0)
+min_close_last_52_days=qcom_dataframe['Low'].tail(52).min(axis=0)
 
+###Busco los promedios de los dias que me interesan
+prom_close_last_52_days=qcom_dataframe['Close/Last'].tail(52).mean()
+prom_close_last_21_days=qcom_dataframe['Close/Last'].tail(21).mean()
+prom_close_days=qcom_dataframe['Close/Last'].mean()
+
+
+
+
+print(prom_close_last_52_days,prom_close_last_21_days,prom_close_days)
