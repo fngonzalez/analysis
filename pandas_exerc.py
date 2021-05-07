@@ -31,3 +31,5 @@ prom_close_days=qcom_dataframe['Close/Last'].mean()
 prom_close_last_52_days=qcom_dataframe['Volume'].tail(52).mean()
 prom_close_last_21_days=qcom_dataframe['Volume'].tail(21).mean()
 prom_close_days=qcom_dataframe['Volume'].mean()
+
+###Busco la desviacion estandar de los dias que me interesan
