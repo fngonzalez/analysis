@@ -1,22 +1,15 @@
 import pandas as pd
 
 #Leo el CSV y lo convierto en DataFrame
-qcom_csv = pd.read_csv('qcom.csv')
+qcom_csv = pd.read_csv('../db/qcom.csv')
 qcom_df = pd.DataFrame(qcom_csv)
 
 #Le saco caracteres que no me interesan
 qcom_df = qcom_df.replace({'\$': ''}, regex=True)
 
-#Agarro los valores de la fecha y la elimino para poder
-#convertir los valores del df a flotantes
-qcom_df_dates = qcom_df['Date']
-del qcom_df['Date']
-
-#convierto los valores del df a flotantes
-qcom_df = qcom_df.apply(pd.to_numeric)
-
-#le devuelvo la fecha a cada row
-qcom_df['Date'] = qcom_df_dates
+#convierto los valores del df a tipos correspondientes
+qcom_df = qcom_df.apply(pd.to_numeric, errors='ignore')
+qcom_df.Date = pd.to_datetime(qcom_df.Date)
 
 
 #Simplifico la manera de buscar minimos
@@ -91,3 +84,4 @@ con un MINIMO de los ultimos 52 dias en {minimal_52}, y en las ultimos 21 dias
 el MINIMO se mantuvo en {minimal_21}""")
 print()
 print()
+
