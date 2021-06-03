@@ -2,9 +2,10 @@ import pandas as pd
 
 # Leo el CSV y lo convierto en DataFrame
 spy_csv = pd.read_csv("~/Trading/db/SPY.csv")
-spy_df = pd.DataFrame(spy_csv.tail(1000))
+spy_df = pd.DataFrame(spy_csv.tail(1000)).round(2)
 spy_df = spy_df.reset_index()
-print(spy_df)
+del spy_df["index"]
+
 
 def calcular_media(df, media):
     # tomo el df y agarro los closes
@@ -34,28 +35,46 @@ def create_mean_in_df(mean, df):
     df[f"mean_{mean}"] = calcular_media(df, mean)
     return f"mean_{mean}"
 
-#quiero que me genere una nueva columna en la que me diga cuando estar largo o corto
+
+# quiero que me genere una nueva columna en la que me diga cuando estar largo o corto
 def buy_or_sell(list_of_mean, df):
-    
+
     for day in range(len(df)):
-        
-        #si la mediana no tiene valores, entonces que no calcule nada
+
+        # si la mediana no tiene valores, entonces que no calcule nada
         if df.loc[day, list_of_mean[0]] == 0.00 or df.loc[day, list_of_mean[1]] == 0.00:
             pass
-        
-        #si la mediana mas chica tiene un valor mas alto que la mas grande o igual, entonces que compre
+
+        # si la mediana mas chica tiene un valor mas alto que la mas grande o igual, entonces que compre
         elif df.loc[day, list_of_mean[0]] >= df.loc[day, list_of_mean[1]]:
             df.loc[day, "status"] = "long"
-        
-        #en cualquier otro caso, sera que la mediana mas chica es mas pequenna
+
+        # en cualquier otro caso, sera que la mediana mas chica es mas pequenna
         else:
             df.loc[day, "status"] = "short"
+
+
+# calcula la variacion de los valores
+def calc_diff(df):
+    # en el dia cero no vamos a tener comparacion
+    df.loc[0, "diff"] = 0
+    for day in range(1, len(df)):
+        # agarra el valor del dia de hoy
+        today_close = df.loc[day, "Close"]
+        # agarra el valor del dia de ayer
+        yest_close = df.loc[day - 1, "Close"]
+        # calcula la diferencia
+        diff = today_close - yest_close
+        # se mete la variable en la columna correspondiente
+        df.loc[day, "diff"] = diff.round(2)
+
 
 def run():
     list_of_mean = []
     list_of_mean.append(create_mean_in_df(10, spy_df))
     list_of_mean.append(create_mean_in_df(50, spy_df))
     buy_or_sell(list_of_mean, spy_df)
+    calc_diff(spy_df)
 
 
 if __name__ == "__main__":
