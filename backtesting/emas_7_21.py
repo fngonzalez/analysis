@@ -28,14 +28,16 @@ def calcular_media(df, media):
             spy_red.loc[row, "mean"] = mean_value
     return spy_red[['mean']]
 
+#conseguir los valores en una nueva funcion
+def create_mean_in_df(mean, df):
+    df[f'mean_{mean}']= calcular_media(df, mean)
 
+create_mean_in_df(10,spy_df)
+print(spy_df)
 
-spy_df['mean_10']= calcular_media(spy_df, 10)
-spy_df['mean_50'] = calcular_media(spy_df, 50)
+# for i in range(len(spy_df)):
+#     if spy_df.loc[i,'mean_10']> spy_df.loc[i,'mean_50']:
+#         spy_df.loc[i,'status']='long'
+#     else: spy_df.loc[i,'status']='short'
 
-for i in range(len(spy_df)):
-    if spy_df.loc[i,'mean_10']> spy_df.loc[i,'mean_50']:
-        spy_df.loc[i,'status']='long'
-    else: spy_df.loc[i,'status']='short'
-
-print(spy_df.tail(100))
+# print(spy_df.tail(100))
