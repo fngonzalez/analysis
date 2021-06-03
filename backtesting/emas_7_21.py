@@ -2,8 +2,9 @@ import pandas as pd
 
 # Leo el CSV y lo convierto en DataFrame
 spy_csv = pd.read_csv("~/Trading/db/SPY.csv")
-spy_df = pd.DataFrame(spy_csv)
-
+spy_df = pd.DataFrame(spy_csv.tail(1000))
+spy_df = spy_df.reset_index()
+print(spy_df)
 
 def calcular_media(df, media):
     # tomo el df y agarro los closes
