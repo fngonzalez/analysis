@@ -61,10 +61,13 @@ def calc_diff(df):
     for day in range(1, len(df)):
         # agarra el valor del dia de hoy
         today_close = df.loc[day, "Close"]
+
         # agarra el valor del dia de ayer
         yest_close = df.loc[day - 1, "Close"]
+
         # calcula la diferencia
         diff = today_close - yest_close
+
         # se mete la variable en la columna correspondiente
         df.loc[day, "diff"] = diff.round(2)
 
