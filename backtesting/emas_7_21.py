@@ -33,6 +33,17 @@ def create_mean_in_df(mean, df):
     df[f"mean_{mean}"] = calcular_media(df, mean)
     return f"mean_{mean}"
 
+
+def buy_or_sell(list_of_mean, df):
+
+    for day in range(len(df)):
+        if df.loc[day, list_of_mean[0]] == 0.00 or df.loc[day, list_of_mean[1]] == 0.00:
+            pass
+        elif df.loc[day, list_of_mean[0]] > df.loc[day, list_of_mean[1]]:
+            df.loc[day, "status"] = "long"
+        else:
+            df.loc[day, "status"] = "short"
+
 def run():
     list_of_mean = []
     list_of_mean.append(create_mean_in_df(10, spy_df))
