@@ -36,9 +36,7 @@ def create_mean_in_df(mean, df):
     return f"mean_{mean}"
 
 
-# quiero que me genere una nueva columna en la que me diga cuando estar largo o corto
 def buy_or_sell(list_of_mean, df):
-
     for day in range(len(df)):
 
         # si la mediana no tiene valores, entonces que no calcule nada
@@ -72,12 +70,24 @@ def calc_diff(df):
         df.loc[day, "diff"] = diff.round(2)
 
 
+def send_to_excel(df, path, sheetname):
+    writer = pd.ExcelWriter(path)
+    df.to_excel(
+        writer,
+        sheetname,
+    )
+    writer.save()
+
+
 def run():
     list_of_mean = []
     list_of_mean.append(create_mean_in_df(10, spy_df))
     list_of_mean.append(create_mean_in_df(50, spy_df))
     buy_or_sell(list_of_mean, spy_df)
     calc_diff(spy_df)
+    path = "~/Documentos/Analisis-spy.xlsx"
+    sheetname = "analisis medias"
+    send_to_excel(spy_df, path, sheetname)
 
 
 if __name__ == "__main__":
