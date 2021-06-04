@@ -37,7 +37,9 @@ def create_mean_in_df(mean, df):
 
 
 def buy_or_sell(list_of_mean, df):
-    for day in range(len(df)):
+    df['status']=''
+    df['result']=''
+    for day in range(45, len(df)):
 
         # si la mediana no tiene valores, entonces que no calcule nada
         if df.loc[day, list_of_mean[0]] == 0.00 or df.loc[day, list_of_mean[1]] == 0.00:
@@ -47,9 +49,25 @@ def buy_or_sell(list_of_mean, df):
         elif df.loc[day, list_of_mean[0]] >= df.loc[day, list_of_mean[1]]:
             df.loc[day, "status"] = "long"
 
+            # si estabamos largos, entonces sumamos a la posicion
+            if df.loc[day - 1, "status"] == "long":
+                yest_change = df.loc[day - 1, "result"]
+                today_change = df.loc[day, "diff"]
+                df.loc[day, "result"] = yest_change + today_change
+            else:
+                df.loc[day, "result"] = 0
+
         # en cualquier otro caso, sera que la mediana mas chica es mas pequenna
         else:
             df.loc[day, "status"] = "short"
+
+            # si estabamos cortos, entonces sumamos a esa posicion
+            if df.loc[day - 1, "status"] == "short":
+                yest_change = df.loc[day - 1, "result"]
+                today_change = df.loc[day, "diff"]
+                df.loc[day, "result"] = yest_change + -today_change
+            else:
+                df.loc[day, "result"] = 0
 
 
 # calcula la variacion de los valores
@@ -83,8 +101,8 @@ def run():
     list_of_mean = []
     list_of_mean.append(create_mean_in_df(10, spy_df))
     list_of_mean.append(create_mean_in_df(50, spy_df))
-    buy_or_sell(list_of_mean, spy_df)
     calc_diff(spy_df)
+    buy_or_sell(list_of_mean, spy_df)
     path = "~/Documentos/Analisis-spy.xlsx"
     sheetname = "analisis medias"
     send_to_excel(spy_df, path, sheetname)
