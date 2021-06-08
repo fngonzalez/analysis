@@ -37,38 +37,51 @@ def create_mean_in_df(mean, df):
 
 
 def buy_or_sell(list_of_mean, df):
-    df['status']=''
-    df['result']=''
-    for day in range(45, len(df)):
+    df["status"] = ""
+    df["result"] = ""
+    for day in range(1, len(df)):
 
-        # si la mediana no tiene valores, entonces que no calcule nada
+        # #si la mediana no tiene valores, entonces que no calcule nada
         if df.loc[day, list_of_mean[0]] == 0.00 or df.loc[day, list_of_mean[1]] == 0.00:
-            pass
+            df.loc[day, "status"] = ''
 
-        # si la mediana mas chica tiene un valor mas alto que la mas grande o igual, entonces que compre
+        # # si la mediana mas chica tiene un valor mas alto que la mas grande o igual, entonces que compre
         elif df.loc[day, list_of_mean[0]] >= df.loc[day, list_of_mean[1]]:
             df.loc[day, "status"] = "long"
+            df.loc[day, "result"] = 0
+            # #si el dia de ayer estabamos cortos
+            if df.loc[day - 1, "status"] == "short":
+                df.loc[day, "status"] = "c_short"
+                yest_result = df.loc[day-1, "result"]
+                today_change = df.loc[day, "diff"] 
+                df.loc[day, "result"] = yest_result + -today_change
 
-            # si estabamos largos, entonces sumamos a la posicion
-            if df.loc[day - 1, "status"] == "long":
-                yest_change = df.loc[day - 1, "result"]
-                today_change = df.loc[day, "diff"]
-                df.loc[day, "result"] = yest_change + today_change
-            else:
-                df.loc[day, "result"] = 0
+            
+            #si el dia de ayer estabamos largos
+            elif df.loc[day - 1, "status"] == "long":
+                #le sumamos el resultado al resultado
+                yest_result = df.loc[day-1, "result"]
+                today_change = df.loc[day, "diff"] 
+                df.loc[day, "result"] = yest_result + today_change
 
         # en cualquier otro caso, sera que la mediana mas chica es mas pequenna
         else:
             df.loc[day, "status"] = "short"
-
-            # si estabamos cortos, entonces sumamos a esa posicion
-            if df.loc[day - 1, "status"] == "short":
-                yest_change = df.loc[day - 1, "result"]
-                today_change = df.loc[day, "diff"]
-                df.loc[day, "result"] = yest_change + -today_change
-            else:
-                df.loc[day, "result"] = 0
-
+            df.loc[day, "result"] = 0
+            
+            #si el dia de ayer estabamos largos
+            if df.loc[day - 1, "status"] == "long":
+                df.loc[day, "status"] = "c_long"
+                yest_result = df.loc[day-1, "result"]
+                today_change = df.loc[day, "diff"] 
+                df.loc[day, "result"] = yest_result + today_change
+            
+            #si el dia de ayer estabamos cortos
+            elif df.loc[day - 1, "status"] == "short":
+                #le sumamos el resultado de ayer al resultado de hoy
+                yest_result = df.loc[day-1, "result"]
+                today_change = df.loc[day, "diff"] 
+                df.loc[day, "result"] = yest_result + -today_change
 
 # calcula la variacion de los valores
 def calc_diff(df):
