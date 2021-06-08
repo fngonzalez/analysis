@@ -39,8 +39,8 @@ def create_mean_in_df(mean, df):
 def buy_or_sell(list_of_mean, df):
     df["status"] = ""
     df["result"] = ""
+    q_day = 1
     for day in range(1, len(df)):
-
         # #si la mediana no tiene valores, entonces que no calcule nada
         if df.loc[day, list_of_mean[0]] == 0.00 or df.loc[day, list_of_mean[1]] == 0.00:
             df.loc[day, "status"] = ""
@@ -56,6 +56,10 @@ def buy_or_sell(list_of_mean, df):
                 today_change = df.loc[day, "diff"]
                 df.loc[day, "t_result"] = yest_result + -today_change
                 df.loc[day, "result"] = yest_result + -today_change
+                
+                # le sumo el dia de hoy, y despues lo reinicio
+                df.loc[day, "q_days"] = q_day + 1
+                q_day = 1
 
             # si el dia de ayer estabamos largos
             elif df.loc[day - 1, "status"] == "long":
@@ -63,6 +67,9 @@ def buy_or_sell(list_of_mean, df):
                 yest_result = df.loc[day - 1, "result"]
                 today_change = df.loc[day, "diff"]
                 df.loc[day, "result"] = yest_result + today_change
+                
+                # le sumo el dia
+                q_day = q_day + 1
 
         # en cualquier otro caso, sera que la mediana mas chica es mas pequenna
         else:
@@ -76,6 +83,10 @@ def buy_or_sell(list_of_mean, df):
                 today_change = df.loc[day, "diff"]
                 df.loc[day, "t_result"] = yest_result + today_change
                 df.loc[day, "result"] = yest_result + today_change
+                
+                # le sumo el dia de hoy, y despues lo reinicio
+                df.loc[day, "q_days"] = q_day + 1
+                q_day = 1
 
             # si el dia de ayer estabamos cortos
             elif df.loc[day - 1, "status"] == "short":
@@ -83,6 +94,9 @@ def buy_or_sell(list_of_mean, df):
                 yest_result = df.loc[day - 1, "result"]
                 today_change = df.loc[day, "diff"]
                 df.loc[day, "result"] = yest_result + -today_change
+                
+                # le sumo el dia
+                q_day = q_day + 1
 
 
 # calcula la variacion de los valores
