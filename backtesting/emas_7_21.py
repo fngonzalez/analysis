@@ -43,7 +43,7 @@ def buy_or_sell(list_of_mean, df):
 
         # #si la mediana no tiene valores, entonces que no calcule nada
         if df.loc[day, list_of_mean[0]] == 0.00 or df.loc[day, list_of_mean[1]] == 0.00:
-            df.loc[day, "status"] = ''
+            df.loc[day, "status"] = ""
 
         # # si la mediana mas chica tiene un valor mas alto que la mas grande o igual, entonces que compre
         elif df.loc[day, list_of_mean[0]] >= df.loc[day, list_of_mean[1]]:
@@ -52,36 +52,38 @@ def buy_or_sell(list_of_mean, df):
             # #si el dia de ayer estabamos cortos
             if df.loc[day - 1, "status"] == "short":
                 df.loc[day, "status"] = "c_short"
-                yest_result = df.loc[day-1, "result"]
-                today_change = df.loc[day, "diff"] 
+                yest_result = df.loc[day - 1, "result"]
+                today_change = df.loc[day, "diff"]
+                df.loc[day, "t_result"] = yest_result + -today_change
                 df.loc[day, "result"] = yest_result + -today_change
 
-            
-            #si el dia de ayer estabamos largos
+            # si el dia de ayer estabamos largos
             elif df.loc[day - 1, "status"] == "long":
-                #le sumamos el resultado al resultado
-                yest_result = df.loc[day-1, "result"]
-                today_change = df.loc[day, "diff"] 
+                # le sumamos el resultado al resultado
+                yest_result = df.loc[day - 1, "result"]
+                today_change = df.loc[day, "diff"]
                 df.loc[day, "result"] = yest_result + today_change
 
         # en cualquier otro caso, sera que la mediana mas chica es mas pequenna
         else:
             df.loc[day, "status"] = "short"
             df.loc[day, "result"] = 0
-            
-            #si el dia de ayer estabamos largos
+
+            # si el dia de ayer estabamos largos
             if df.loc[day - 1, "status"] == "long":
                 df.loc[day, "status"] = "c_long"
-                yest_result = df.loc[day-1, "result"]
-                today_change = df.loc[day, "diff"] 
+                yest_result = df.loc[day - 1, "result"]
+                today_change = df.loc[day, "diff"]
+                df.loc[day, "t_result"] = yest_result + today_change
                 df.loc[day, "result"] = yest_result + today_change
-            
-            #si el dia de ayer estabamos cortos
+
+            # si el dia de ayer estabamos cortos
             elif df.loc[day - 1, "status"] == "short":
-                #le sumamos el resultado de ayer al resultado de hoy
-                yest_result = df.loc[day-1, "result"]
-                today_change = df.loc[day, "diff"] 
+                # le sumamos el resultado de ayer al resultado de hoy
+                yest_result = df.loc[day - 1, "result"]
+                today_change = df.loc[day, "diff"]
                 df.loc[day, "result"] = yest_result + -today_change
+
 
 # calcula la variacion de los valores
 def calc_diff(df):
@@ -112,12 +114,12 @@ def send_to_excel(df, path, sheetname):
 
 def run():
     list_of_mean = []
-    list_of_mean.append(create_mean_in_df(10, spy_df))
-    list_of_mean.append(create_mean_in_df(50, spy_df))
+    list_of_mean.append(create_mean_in_df(7, spy_df))
+    list_of_mean.append(create_mean_in_df(21, spy_df))
     calc_diff(spy_df)
     buy_or_sell(list_of_mean, spy_df)
     path = "~/Documentos/Analisis-spy.xlsx"
-    sheetname = "analisis medias"
+    sheetname = "analisis-medias"
     send_to_excel(spy_df, path, sheetname)
 
 
